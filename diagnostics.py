@@ -6,10 +6,14 @@ import os
 import json
 
 
-def model_predictions(model='trainedmodel.pkl', test_data='testdata.csv'):
+def model_predictions(
+        model='trainedmodel.pkl',
+        config_path='test_data_path',
+        data='testdata.csv'):
     """
     Get list of model predictions on test data
     Inputs: Model = prediction model
+            config_path = data folder to use, specified in config.json
             data = test dataset
     """
     # Load model and get classifier
@@ -20,16 +24,16 @@ def model_predictions(model='trainedmodel.pkl', test_data='testdata.csv'):
     clf = joblib.load(model_path)
 
     # Get test data and put in data frame
-    test_data_path = os.path.join(
-        os.getcwd(), config['test_data_path'] + '/' + test_data)
-    df = pd.read_csv(test_data_path)
+    data_path = os.path.join(
+        os.getcwd(), config[config_path] + '/' + data)
+    df = pd.read_csv(data_path)
 
     # Separate features from labels and predict on labels
     X = df.drop(['exited', 'corporation'], axis=1)
     return list(clf.predict(X))
 
 
-def dataframe_summary(test_data='testdata.csv'):
+def dataframe_summary(data='testdata.csv', config_path='test_data_path'):
     """
     Return a nested list of summary statistics where list one = means,
     list two = medians list three = standard deviations.
@@ -37,16 +41,25 @@ def dataframe_summary(test_data='testdata.csv'):
     """
     with open('config.json', 'r') as f:
         config = json.load(f)
-    test_data_path = os.path.join(
-        os.getcwd(), config['test_data_path'] + '/' + test_data)
-    df = pd.read_csv(test_data_path)
+    data_path = os.path.join(
+        os.getcwd(), config[config_path] + '/' + data)
+    df = pd.read_csv(data_path)
 
     # Get features and find mean, median, and std dev
     X = df.drop(['exited', 'corporation'], axis=1)
     metric_list = []
-    metric_list.append(list(X.mean()))
-    metric_list.append(list(X.median()))
-    metric_list.append(list(X.std()))
+    means = list(X.mean())
+    means = f'Means: {means}'
+    medians = list(X.median())
+    medians = f'Medians: {medians}'
+    std = list(X.std())
+    std = f'Standard Deviations: {std}'
+    metric_list.append(means)
+    metric_list.append(medians)
+    metric_list.append(std)
+    # metric_list.append(list(X.mean()))
+    # metric_list.append(list(X.median()))
+    # metric_list.append(list(X.std()))
     return metric_list
 
 
@@ -91,16 +104,18 @@ def execution_time():
     return [ingestion(), training()]
 
 
-def outdated_packages_list():
+def outdated_packages_list(write=True):
     """
     Check current and latest versions of all modules and dependencies
     """
-    # get a list of
     requirements = os.path.join(os.getcwd(), 'requirements.txt')
-    with open(requirements, 'wb+') as f:
-        f.write(subprocess.check_output(
-            ['pip', 'list', '--outdated', '>', 'requirements.txt']))
-    return
+    if write:
+        with open(requirements, 'wb+') as f:
+            f.write(subprocess.check_output(
+                ['pip', 'list', '--outdated', '>', 'requirements.txt']))
+    else:
+        return subprocess.check_output(
+            ['pip', 'list', '--outdated', '>', 'requirements.txt'])
 
 
 if __name__ == '__main__':
