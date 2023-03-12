@@ -94,8 +94,8 @@ def execution_time():
         subprocess.check_output(['python', str(ingestion_path)])
         timing = timeit.default_timer() - starttime
         return timing
-    # Function for timing model training
 
+    # Function for timing model training
     def training():
         starttime = timeit.default_timer()
         subprocess.check_output(['python', str(training_path)])
@@ -107,6 +107,7 @@ def execution_time():
 def outdated_packages_list(write=True):
     """
     Check current and latest versions of all modules and dependencies
+    Write to requirements text file if write=True
     """
     requirements = os.path.join(os.getcwd(), 'requirements.txt')
     if write:
