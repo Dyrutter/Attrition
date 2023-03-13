@@ -57,34 +57,40 @@ def output_folder():
     return output_folder_path
 
 
-def merge_multiple_dataframe():
+csv_files = get_csv_files()
+
+
+def merge_multiple_dataframes(csv_files,
+                              save=True,
+                              output_csv='finaldata.csv'):
     """
     Merge multiple data frames and write the output to a new csv file
     Shapes and Column names must be the same in all instances
     Write the names of the csv file files used to ingestedfiles.txt
+    Inputs:
+        csv_files = list of csv file filepaths
+        save = True if saving new data frame to a new file
+        output_csv = filename of merged data frame
     """
     # Merge data frames and drop duplicates
-    csv_files = get_csv_files()
     full_df = pd.DataFrame()
     for csv in csv_files:
         df = pd.read_csv(csv)
         full_df = pd.concat([df, full_df])
     df = full_df.drop_duplicates()
 
-    # Save csv file to output folder
-    output_csv_folder = output_folder()
-    output_csv = 'finaldata.csv'
-    df.to_csv(os.path.join(output_csv_folder, output_csv), index=False)
-    logger.info(f'{output_csv} Data Frame file has been created')
+    if save and output_csv is not None:
+        # Save csv file to output folder
+        output_csv_folder = output_folder()
+        output_csv = 'finaldata.csv'
+        df.to_csv(os.path.join(output_csv_folder, output_csv), index=False)
 
     # Save list of used data frames to output folder
-    used_csvs = os.path.join(output_csv_folder, 'ingestedfiles.txt')
-    with open(used_csvs, 'w') as fp:
-        fp.write(str(csv_files))
-    logger.info(f'Data Frames from {csv_files} were used')
+        used_csvs = os.path.join(output_csv_folder, 'ingestedfiles.txt')
+        with open(used_csvs, 'w') as fp:
+            fp.write(str(csv_files))
     return df
 
 
 if __name__ == '__main__':
-    df = merge_multiple_dataframe()
-    print(df.shape)
+    df = merge_multiple_dataframes()
