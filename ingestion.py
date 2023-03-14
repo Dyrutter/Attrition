@@ -93,4 +93,4 @@ def merge_multiple_dataframes(csv_files,
 
 
 if __name__ == '__main__':
-    df = merge_multiple_dataframes()
+    df = merge_multiple_dataframes(csv_files)
