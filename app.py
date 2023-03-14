@@ -35,7 +35,9 @@ def f1_score():
     """
     Check the f1 score of the deployed model
     """
-    score = json.dumps({'f1 score': str(scoring.score_model())})
+    y_true, y_pred, model = scoring.load_model()
+    score = json.dumps(
+        {'f1 score': str(scoring.score_model(y_true, y_pred, model))})
     return score  # automatically uses test data
 
 
@@ -71,5 +73,12 @@ def diagnostic_data():
                        "Outdated modules": outdated()})
 
 
-if __name__ == "__main__":
+def run():
+    """
+    Start up host
+    """
     app.run(host='0.0.0.0', port=8000, debug=True, threaded=True)
+
+
+if __name__ == "__main__":
+    run()
