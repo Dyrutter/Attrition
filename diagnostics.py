@@ -8,8 +8,8 @@ import json
 
 def model_predictions(
         model='trainedmodel.pkl',
-        config_path='test_data_path',
-        data='testdata.csv'):
+        config_path='output_folder_path',
+        data='finaldata.csv'):
     """
     Get list of model predictions on test data
     Inputs: Model = prediction model
@@ -33,7 +33,7 @@ def model_predictions(
     return list(clf.predict(X))
 
 
-def dataframe_summary(data='testdata.csv', config_path='test_data_path'):
+def dataframe_summary(data='finaldata.csv', config_path='output_folder_path'):
     """
     Return a nested list of summary statistics where list one = means,
     list two = medians list three = standard deviations.
@@ -57,9 +57,6 @@ def dataframe_summary(data='testdata.csv', config_path='test_data_path'):
     metric_list.append(means)
     metric_list.append(medians)
     metric_list.append(std)
-    # metric_list.append(list(X.mean()))
-    # metric_list.append(list(X.median()))
-    # metric_list.append(list(X.std()))
     return metric_list
 
 
