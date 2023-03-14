@@ -71,5 +71,6 @@ def train_model(train=True):
         except FileNotFoundError:
             raise FileNotFoundError("No model exists! You need to train one!")
 
-# if __name__ == '__main___':
-# train_model()
+
+if __name__ == '__main___':
+    train_model()
