@@ -7,24 +7,27 @@ import os
 import diagnostics
 
 
-def score_model(model='trainedmodel.pkl', test_data='testdata.csv'):
+def graph_matrix(model='trainedmodel.pkl',
+                 config_path='test_data_path',
+                 data='testdata.csv'):
     """
     Create a confusion matrix using the test data and deployed model
     Inputs: model = model filename
-                test_data = test data file name
+            config_path = path to data in json file
+            data = test data file name
     """
     # Load in config.json file
     with open('config.json', 'r') as f:
         config = json.load(f)
 
     # Get data frame and extract test labels
-    test_data_path = os.path.join(
-        os.getcwd(), config['test_data_path'] + '/' + test_data)
-    df = pd.read_csv(test_data_path)
+    data_path = os.path.join(
+        os.getcwd(), config[config_path] + '/' + data)
+    df = pd.read_csv(data_path)
     y = df['exited']
 
     # Get predictions
-    preds = diagnostics.model_predictions(test_data=test_data)
+    preds = diagnostics.model_predictions(data=data)
 
     # Get list of class labels from model
     model_path = os.path.join(
@@ -46,4 +49,4 @@ def score_model(model='trainedmodel.pkl', test_data='testdata.csv'):
 
 
 if __name__ == '__main__':
-    score_model()
+    graph_matrix()
